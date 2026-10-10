@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <!-- 原图标是靛蓝→紫的霓虹渐变，正撞设计上下文列为反模式的「一眼 AI」配色。
+       改为暖黑底 + 琥珀荧光 + 发丝线框，与站内终端语言一致（无渐变）。 -->
+  <rect width="192" height="192" rx="28" fill="#0e0d0a"/>
+  <rect x="10.5" y="10.5" width="171" height="171" rx="20"
+        fill="none" stroke="#ffb000" stroke-width="1.5" opacity="0.45"/>
+  <path d="M52 58h32c9 0 16 7 16 16v62c0-9-7-16-16-16H52z" fill="#ffb000" opacity="0.95"/>
+  <path d="M140 58h-32c-9 0-16 7-16 16v62c0-9 7-16 16-16h32z" fill="#ffb000" opacity="0.55"/>
+</svg>
