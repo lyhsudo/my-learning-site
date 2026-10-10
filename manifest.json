@@ -1,0 +1,20 @@
+{
+  "name": "我的课程知识库",
+  "short_name": "课程库",
+  "description": "专属于个人的离线学习网站：笔记、闪卡、间隔重复、知识图谱与 AI 辅导",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#eaeefb",
+  "theme_color": "#eaeefb",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="glass" data-mode="light" data-page-node-id="UfIIHXOGZsPqWoW9x3NC5v">
+<head data-page-node-id="5GacrNiNL4SxUwH0Y2T7U5">
+  <meta charset="UTF-8" data-page-node-id="oaAZMR5o5HzpwZdmt2f5No" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="9LX3jktelEh0U7h9ymUFmo" />
+  <meta name="description" content="纯离线的工科课程复习站：8 学科 103 篇笔记、KaTeX 公式、闪卡间隔重复与知识链。" />
+  <title>我的课程知识库</title>
+  <!-- theme-color 必须在启动脚本之前：脚本要读它并按主题改写（首帧即正确） -->
+  <meta name="theme-color" content="#eaeefb" data-page-node-id="TI4yjOpQJGu5zvxqE2XOaQ" />
+
+  <!-- 启动前置：必须在首次绘制之前执行，否则会先按静态属性画一帧再切，
+       深色用户每次打开都看见一次白闪（FOUC）。
+       主题现在是二维：data-theme（配色身份）× data-mode（明暗）。
+       旧的单维键 lls_theme 作 legacy 迁移，读过一次后由 app.js 写入新键。
+       .booting 同时前置，启动期间的过渡一并关掉，避免骨架→应用的过渡抖动。 -->
+  <script>
+    (function () {
+      var d = document.documentElement;
+      var PALS = ["glass", "amber", "paper", "ink", "night"];
+      var pal = null, mode = null, legacy = null;
+      try {
+        pal = localStorage.getItem("lls_palette");
+        mode = localStorage.getItem("lls_mode");
+        legacy = localStorage.getItem("lls_theme");
+      } catch (e) {}
+      /* legacy 迁移：旧 light → 暖纸书桌·亮；旧 dark → 终端琥珀·暗 */
+      if (legacy === "light") { if (!pal) pal = "paper"; if (!mode) mode = "light"; }
+      else if (legacy === "dark") { if (!pal) pal = "amber"; if (!mode) mode = "dark"; }
+      if (PALS.indexOf(pal) < 0) pal = "glass";
+      if (mode !== "light" && mode !== "dark") {
+        /* 未设置 或 选了「跟随系统」：此刻就问系统，避免先画错再改 */
+        var sysDark = false;
+        try { sysDark = !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches); } catch (e) {}
+        mode = sysDark ? "dark" : "light";
+      }
+      d.setAttribute("data-theme", pal);
+      d.setAttribute("data-mode", mode);
+      /* 移动端地址栏 / PWA 标题栏颜色 = 各主题的 --bg。
+         取值与 style.css 配色表逐字一致（test_theme 有断言锁同步），
+         这里内联是为了首帧就正确 —— 否则 JS 执行前地址栏会先闪一次静态色。 */
+      try {
+        var BG = {
+          "glass:light": "#eaeefb", "glass:dark": "#0b1020",
+          "amber:light": "#f1ebdd", "amber:dark": "#0e0d0a",
+          "paper:light": "#faf2e9", "paper:dark": "#1c1610",
+          "ink:light": "#f3f2ee", "ink:dark": "#131312",
+          "night:light": "#eef1f8", "night:dark": "#0a1030"
+        };
+        var mc = document.querySelector('meta[name="theme-color"]');
+        var hex = BG[pal + ":" + mode];
+        if (mc && hex) mc.setAttribute("content", hex);
+      } catch (e) {}
+      /* 正文排版：也要在首帧前应用，否则打开笔记会先按默认字号排一次再跳 */
+      try {
+        var t = JSON.parse(localStorage.getItem("lls_type") || "null");
+        if (t && typeof t === "object") {
+          if (isFinite(t.fs) && t.fs > 0) d.style.setProperty("--read-fs", t.fs + "px");
+          if (isFinite(t.lh) && t.lh > 0) d.style.setProperty("--read-lh", String(t.lh));
+          if (isFinite(t.ls) && t.ls > 0) d.style.setProperty("--read-ls", t.ls + "px");
+          if (isFinite(t.gap) && t.gap > 0) d.style.setProperty("--para-gap", t.gap + "px");
+          if (isFinite(t.w) && t.w > 0) d.style.setProperty("--read-w", t.w + "px");
+        }
+      } catch (e) {}
+      d.classList.add("booting", "js-boot");
+      /* 兜底：app.js 万一异常，8s 后也必须把骨架收掉，不能永久盖住页面 */
+      setTimeout(function () {
+        if (d.classList.contains("js-boot")) d.classList.remove("booting", "js-boot");
+      }, 8000);
+    })();
+  </script>
+
+  <!-- data.js 780KB 是全站最大资源，提前到 head 开始下载，与 CSS 并行 -->
+  <link rel="preload" href="data.js" as="script" />
+  <link rel="stylesheet" href="assets/style.css" data-page-node-id="ALPDQZJDkC0wqkHYeHMh45" />
+
+  <!-- KaTeX（269KB JS + 23KB CSS）不在这里同步加载：
+       首屏是驾驶舱（KPI / 今日任务 / 模块启动器），一个公式都没有，
+       而这两份资源占了首屏必需资源的 19%。改由 app.js 的 ensureKatex()
+       在「首次真正要渲染公式」时注入，并在启动空闲期 prefetch 预热。
+       占位表现：.math 容器里本就存着构建期写入的 TeX 源码，按正文字体显示。 -->
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="manifest.json" data-page-node-id="ZT2IWpD7aKBUYsAGUCliIG" />
+</head>
+<body data-page-node-id="ZMNB86KbW8nGAgqpCfbBi4">
+  <header class="topbar" data-page-node-id="86kXFYOvNfEihwdt6QWnzO">
+    <div class="topbar-left" data-page-node-id="9SYkwG7Rm5GYPDFJG9FgAW">
+      <button class="icon-btn" id="sidebarToggle" title="展开/收起侧栏" data-page-node-id="yrFaemTrmNYY2hFPkp34s1">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-page-node-id="jHDb5pgQQJh1Y5YX25OUAW">
+          <line x1="3" y1="6" x2="21" y2="6" data-page-node-id="51Z84HHQOQqGMW0mKoRDS6"/><line x1="3" y1="12" x2="21" y2="12" data-page-node-id="XbwE9HVKIzMQB3XGDFqPPJ"/><line x1="3" y1="18" x2="21" y2="18" data-page-node-id="1cHX5Ihfq018CPBUmS2v8e"/>
+        </svg>
+      </button>
+      <a class="brand" data-action="home" title="回到首页" data-page-node-id="AoIWQwjwlGL9JIEFFJ6aUK">
+        <span class="logo" data-page-node-id="kTpBeZ1u7gFk1U5YlILAXY">学</span>
+        <span id="siteTitle" data-page-node-id="k13lmBsyi2bcrPvgFERlIj">我的学习知识库</span>
+      </a>
+      <nav class="crumb" id="crumb" data-page-node-id="kkSy51EvebGHJgvrqs2JeN"></nav>
+    </div>
+
+    <div class="topbar-right" data-page-node-id="8PONZtHELDxgiD5BwHrroN">
+      <button class="btn" id="cmdkBtn" title="命令面板 · Ctrl / ⌘ + K"><i class=ic data-ico=search2></i><span class="kk">⌘K</span></button>
+      <div class="search" data-page-node-id="6baCcsWfwAcQ5cAdkZSvud">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="xfYJwarifEbNSAnJav8Mpr">
+          <circle cx="11" cy="11" r="7" data-page-node-id="nSUEw4vODsmsHb9frXf36Z"></circle><line x1="21" y1="21" x2="16.65" y2="16.65" data-page-node-id="nNvQDL9KAGcdvS9n3NKYdu"></line>
+        </svg>
+        <input id="searchInput" type="text" placeholder="搜索标题、标签或正文…" data-page-node-id="ToZz3MseHWE7bMfUjMZ3Kw" />
+        <kbd class="kbd" data-page-node-id="JJFjGFrvGbKJnzltKfacHo">/</kbd>
+      </div>
+      <button class="btn" id="backBtn" data-action="back" style="display:none" title="返回上一级" data-page-node-id="S0RRQW53Y1OCZ0yolBgDkn"><i class=ic data-ico=arrowLeft></i> 返回</button>
+      <button class="icon-btn" id="importBtn" title="导入 Markdown 笔记" data-page-node-id="RpBVfYjWEdlvJ33FygEeE2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="8hLzyQKN5IaNRjA00SYWuC">
+          <path d="M12 16V4" data-page-node-id="tBc3d5IcqXMyrQHwvaat9B"/><path d="M7 9l5-5 5 5" data-page-node-id="uVmStnaMBUG9fAzH8vG0xx"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" data-page-node-id="8mc2mPFjk7726Ccuph4HW4"/>
+        </svg>
+      </button>
+      <button class="icon-btn" id="themeBtn" title="切换主题" data-page-node-id="Lgc77JKteLnpfaaF2Bq02S">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-page-node-id="CL1riQWlXAATE6EwtLLqQi">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" data-page-node-id="XodoeevpPvPl01zr8fbBRj"/>
+        </svg>
+      </button>
+      <button class="icon-btn" id="dockBtn" title="AI 学习助手（Alt+A）" data-page-node-id="DLKq14WvTz9bPc0AmXhRu3">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="DLKq14WvTz9bPc0AmXhRu4">
+          <path d="M20.5 12.4c0 3.9-3.8 7-8.5 7-1 0-2-.15-2.9-.42L4.2 20.6l1.3-3.6C4.2 15.7 3.5 14.1 3.5 12.4c0-3.9 3.8-7 8.5-7s8.5 3.1 8.5 7z" data-page-node-id="DLKq14WvTz9bPc0AmXhRu5"/>
+          <path d="M8.6 12.4h.01M12 12.4h.01M15.4 12.4h.01" data-page-node-id="DLKq14WvTz9bPc0AmXhRu6"/>
+        </svg>
+      </button>
+      <button class="icon-btn" id="asideToggle" title="展开/收起信息面板" data-page-node-id="CUnN8RNYVXTXZL0iBCFWgX">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-page-node-id="DTTTbU0TtxEGtS55j5OBAE">
+          <rect x="3" y="4" width="18" height="16" rx="2" data-page-node-id="jX85AllkUMRKFPUaS4bThk"/><line x1="15" y1="4" x2="15" y2="20" data-page-node-id="RdUZo5CxfZTqZKveJm2p2A"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- 启动骨架：data.js（780KB）解析期间 #app 是空的，此前用户看到的是
+       「顶栏 + 三栏空白」。这里用与 .shell 同构的骨架 + 终端装载读数顶上，
+       由 app.js 渲染完成后淡出移除；无脚本时 display:none，不干扰任何断言。 -->
+  <div id="boot" aria-hidden="true">
+    <div class="boot-col">
+      <span class="boot-row"></span><span class="boot-row"></span>
+      <span class="boot-row w70"></span><span class="boot-row"></span>
+      <span class="boot-row w55"></span>
+    </div>
+    <div class="boot-main">
+      <p class="boot-line"><span class="boot-caret"></span>正在装载本地知识库</p>
+      <p class="boot-meta">CONTENT  103 篇 / 8 学科</p>
+      <p class="boot-meta">ENGINE   KaTeX 本地渲染</p>
+      <p class="boot-meta">STORAGE  localStorage</p>
+    </div>
+    <div class="boot-col">
+      <span class="boot-row"></span><span class="boot-row w70"></span>
+      <span class="boot-row"></span>
+    </div>
+  </div>
+
+  <div class="shell" id="shell" data-page-node-id="ftpE3r34jc3tBegwBYJoYk">
+    <aside class="sidebar" id="sidebar" data-page-node-id="lrpJuZfjrh42zldHP78JoA"></aside>
+    <main class="main" id="app" data-page-node-id="Xs06aeSBFPQliA0oQcfFUK"></main>
+    <aside class="aside" id="aside" data-page-node-id="2jlDA93zhGDez776XsB4xF"></aside>
+  </div>
+
+  <div id="readBar" class="read-bar" data-page-node-id="guc4LelHvVxImIyXLy5PSk"></div>
+
+  <aside class="ai-dock" id="aiDock" aria-label="AI 学习助手"></aside>
+
+  <div id="selBubble" class="sel-bubble">
+    <button type="button" class="sb-btn primary" data-action="sel-ask">问 AI</button>
+    <button type="button" class="sb-btn" data-action="sel-explain">解释这段</button>
+  </div>
+
+  <footer id="footer" class="footer" data-page-node-id="NMP58WpPcBk9uUyHfuYRD1"></footer>
+
+  <button id="toTop" class="to-top" title="回到顶部" data-page-node-id="5WxT7ehm7tAlRpUBPBGV3J">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="jEWC91pETWOcwMMocnYDGS">
+      <path d="M12 19V5" data-page-node-id="IEJlfELwUYTipDTBucuK2q"/><path d="M6 11l6-6 6 6" data-page-node-id="FVKgMLzmiXf683OFKleFxg"/>
+    </svg>
+  </button>
+
+  <div id="drop" data-page-node-id="YAggn6KuI2Tsk9hqoa75Tv">把 Markdown 文件拖到这里即可导入</div>
+  <div id="modal" class="modal-root"></div>
+  <div id="cmdk" class="cmdk-root"></div>
+  <div id="toast" data-page-node-id="JT5PBvYBMFPxoMaVkkAkvH"></div>
+  <input type="file" id="fileInput" accept=".md,.markdown" multiple style="display:none" data-page-node-id="6OxhPVpCDsxnkLjq3f3XBx" />
+  <input type="file" id="backupInput" accept=".json" style="display:none" data-page-node-id="ph8tikjWEDWqSMm8Ik2bBl" />
+
+  <script src="data.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
